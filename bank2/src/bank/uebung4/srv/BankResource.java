@@ -21,6 +21,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.sun.jersey.api.NotFoundException;
+
 import bank.Account;
 import bank.InactiveException;
 import bank.OverdrawException;
@@ -77,12 +79,18 @@ public class BankResource {
 	@GET
 	@Path("/accounts/{id}")
 	public Account getAccount(@PathParam("id") String id) throws IOException {
-		return new AccountData(localbank.getAccount(id));
+		Account realAcc = localbank.getAccount(id);
+		
+		if (realAcc != null) {
+			return new AccountData(realAcc);
+		} else {
+			throw new NotFoundException("this account doesnt exist or is not active");
+		}
 	}
 	
 	@POST
 	@Path("/accounts")
-	@Consumes("text/plain") 
+	@Consumes("text/plain")
 	@Produces("text/plain")
 	public Response createAccount(String owner) throws IOException, URISyntaxException{
 		System.out.println("createAccount: " +owner);
@@ -109,14 +117,13 @@ public class BankResource {
 	
 	@DELETE
 	@Path("/accounts/{id}")
-	@Produces("text/plain")
-	public int removeAccount(@PathParam("id") String id) throws IOException{
-		System.out.println("removeAccount");
+	public Response removeAccount(@PathParam("id") String id) throws IOException{
+		System.out.println("removeAccount " + id);
 		boolean result = localbank.removeAccount(id);
 		if(result){
-			return 200;
+			return Response.noContent().status(200).build();
 		} else {
-			return 204;			
+			return Response.noContent().status(204).build();
 		}
 	}
 
