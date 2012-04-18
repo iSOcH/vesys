@@ -1,7 +1,6 @@
 package bank.uebung4.client;
 
 import java.io.IOException;
-import java.net.URI;
 
 import javax.ws.rs.core.MediaType;
 
@@ -10,6 +9,7 @@ import com.sun.jersey.api.client.WebResource;
 import bank.Account;
 import bank.InactiveException;
 import bank.OverdrawException;
+import bank.uebung4.AccountData;
 
 public class RESTAccount implements Account{
 	private String number;
@@ -28,60 +28,51 @@ public class RESTAccount implements Account{
 
 	@Override
 	public String getOwner() throws IOException {
-		System.out.print("getOwner: ");
-		String response = resource.path("/"+number).accept(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-		String[] infos = response.split("\n");
-		if(infos!=null && infos[0].contains("Owner")){
-			String[] details = infos[0].split(" ");
-			StringBuffer result = new StringBuffer();
-			for(int i=1;i<details.length;i++){
-				result.append(details[i]);
-			}
-			System.out.println(result);
-			return result.toString();
-		} else {
-			return null;
-		}
+//		System.out.print("getOwner: ");
+//		String response = resource.path("/"+number).accept(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+//		String[] infos = response.split("\n");
+//		if(infos!=null && infos[0].contains("Owner")){
+//			String[] details = infos[0].split(" ");
+//			StringBuffer result = new StringBuffer();
+//			for(int i=1;i<details.length;i++){
+//				result.append(details[i]);
+//			}
+//			System.out.println(result);
+//			return result.toString();
+//		} else {
+//			return null;
+//		}
+		
+		Account realAcc = resource.path("/" + number).accept(MediaType.APPLICATION_JSON)
+				.get(AccountData.class);
+		System.out.println("realAcc: " + realAcc.toString());
+		return realAcc.getOwner();
 	}
 
 	@Override
 	public boolean isActive() throws IOException {
-		int stautus = resource.path("/"+number).head().getStatus();
-		if(stautus == 200){
-			return true;
-		} else {
-			return false;
-		}
+		int status = resource.path("/"+number).head().getStatus();
+		return status == 200;
 	}
 
 	@Override
 	public void deposit(double amount) throws IOException,
 			IllegalArgumentException, InactiveException {
 		double balance = this.getBalance();
-		resource.path("/"+number).type(MediaType.TEXT_PLAIN).put(balance + amount);
+		resource.path("/"+number).type(MediaType.APPLICATION_JSON).put(balance + amount);
 	}
 
 	@Override
 	public void withdraw(double amount) throws IOException,
 			IllegalArgumentException, OverdrawException, InactiveException {
 		double balance = this.getBalance();
-		resource.path("/"+number).type(MediaType.TEXT_PLAIN).put(balance - amount);
+		resource.path("/"+number).type(MediaType.APPLICATION_JSON).put(balance - amount);
 	}
 
 	@Override
 	public double getBalance() throws IOException {
-		String response = resource.path("/"+number).accept(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-		String[] infos = response.split("\n");
-		if(infos!=null && infos[2].contains("Balance")){
-			String[] details = infos[2].split(" ");
-			StringBuffer result = new StringBuffer();
-			for(int i=1;i<details.length;i++){
-				result.append(details[i]);
-			}
-			return Double.valueOf(result.toString());
-		} else {
-			return 0;
-		}
+		Account realAcc = resource.path("/"+number).accept(MediaType.APPLICATION_JSON).get(AccountData.class);
+		return realAcc.getBalance();
 	}
 
 	@Override

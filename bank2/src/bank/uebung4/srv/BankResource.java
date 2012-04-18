@@ -16,13 +16,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import bank.Account;
 import bank.InactiveException;
 import bank.OverdrawException;
+import bank.local.LocalAccount;
 import bank.local.LocalBank;
+import bank.uebung4.AccountData;
 
 @Path("/bank")
 public class BankResource {
@@ -69,7 +73,13 @@ public class BankResource {
 		}
 		return result.toString();
 	}
-
+	
+	@GET
+	@Path("/accounts/{id}")
+	public Account getAccount(@PathParam("id") String id) throws IOException {
+		return new AccountData(localbank.getAccount(id));
+	}
+	
 	@POST
 	@Path("/accounts")
 	@Consumes("text/plain") 
@@ -112,8 +122,8 @@ public class BankResource {
 
 	@PUT
 	@Path("/accounts/{id}")
-	@Produces("text/plain")
-	public Response setBalance(@PathParam("id") String id, @QueryParam("newBalance") int balance) throws IOException{
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response setBalance(@PathParam("id") String id, double balance) throws IOException{
 		System.out.println("setBalance");
 		Account acc = localbank.getAccount(id);
 		if(acc != null){

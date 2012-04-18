@@ -1,8 +1,6 @@
 package bank.uebung4.client;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -38,12 +36,7 @@ public class RESTBank implements Bank {
 	@Override
 	public boolean removeAccount(String number) throws IOException {
 		ClientResponse resp = resource.path("/"+number).delete(ClientResponse.class);
-		int status = resp.getStatus();
-		if(status == 200){
-			return true;
-		} else {
-			return false;
-		}
+		return resp.getStatus() == 200;
 	}
 
 	@Override
@@ -62,18 +55,8 @@ public class RESTBank implements Bank {
 
 	@Override
 	public Account getAccount(String number) throws IOException {
-		System.out.print("getAccount: ");
-		WebResource res = client.resource(number.replace("\n", ""));
-		String response = res.accept(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-		String[] infos = response.split("\n");
-		if(infos!=null && infos.length == 4){
-			String[] details = infos[1].split(" ");
-			StringBuffer result = new StringBuffer();
-			for(int i=1;i<details.length;i++){
-				result.append(details[i]);
-			}
-			System.out.println(result);
-			return new RESTAccount(result.toString(),res);
+		if (getAccountNumbers().contains(number)) {
+			return new RESTAccount(number, resource);
 		} else {
 			return null;
 		}
