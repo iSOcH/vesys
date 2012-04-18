@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -70,12 +71,26 @@ public class RESTBank implements Bank {
 		if (amount < 0) throw new IllegalArgumentException();
 		if (a.isActive() && b.isActive()) {
 			// b.deposit is guaranteed to work now
-			a.withdraw(amount);
-			b.deposit(amount);
+//			a.withdraw(amount);
+//			b.deposit(amount);
+			
+			ClientResponse response = resource.path("/"+a.getNumber()+"/transfer/"+b.getNumber())
+				.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, amount);
+			switch (response.getStatus()) {
+			case 409:
+				throw new OverdrawException();
+			case 406:
+				throw new IllegalArgumentException();
+			case 404:
+				throw new InactiveException();
+			case 200:
+				// everything was OK :)
+				break;
+			default:
+				throw new IOException();
+			}
 		} else {
 			throw new InactiveException();
 		}
-		
 	}
-
 }

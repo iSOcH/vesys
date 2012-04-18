@@ -150,4 +150,29 @@ public class BankResource {
 			return Response.status(404).build();						
 		}
 	}
+	
+	@POST
+	@Path("/accounts/{accANumber}/transfer/{accBNumber}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response transfer(
+			@PathParam("accANumber") String accANumber,
+			@PathParam("accBNumber") String accBNumber,
+			double amount) throws IOException {
+		Account accA = localbank.getAccount(accANumber);
+		Account accB = localbank.getAccount(accBNumber);
+		
+		if (accA != null && accB != null) {
+			try {
+				localbank.transfer(accA, accB, amount);
+			} catch (IllegalArgumentException e) {
+				return Response.notAcceptable(null).build();
+			} catch (OverdrawException e) {
+				return Response.status(409).build();
+			} catch (InactiveException e) {
+				throw new NotFoundException("at least one account was not active");
+			}
+			return Response.ok().build();
+		}
+		throw new NotFoundException("at least one account does not exist");
+	}
 }
