@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sun.jersey.api.container.grizzly.GrizzlyWebContainerFactory;
+import com.sun.jersey.api.json.JSONConfiguration;
 
 public class BankServer {
 	public static void main(String[] args) throws IOException {
@@ -16,6 +17,7 @@ public class BankServer {
 		// "ch.fhnw.imvs.msg.resources"); // package with resource classes
 
 		config.put("javax.ws.rs.Application", BankApplication.class.getName());
+		config.put(JSONConfiguration.FEATURE_POJO_MAPPING, "true");
 		System.out.println("Starting grizzly...");
 		GrizzlyWebContainerFactory.create(baseUri, config);
 

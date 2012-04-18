@@ -48,14 +48,16 @@ public class RESTBank implements Bank {
 
 	@Override
 	public Set<String> getAccountNumbers() throws IOException {
-		System.out.print("getAccountNumbers: ");
-		String response = resource.accept(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-		System.out.println(response);
-		Set<String> set = new TreeSet<String>();
-		for(String s : response.split("/n")){
-			if(!"".equals(s)) set.add(s); System.out.println(s);
-		}
-		return set;
+//		System.out.print("getAccountNumbers: ");
+//		String response = resource.accept(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+//		System.out.println(response);
+//		Set<String> set = new TreeSet<String>();
+//		for(String s : response.split("/n")){
+//			if(!"".equals(s)) set.add(s); System.out.println(s);
+//		}
+//		return set;
+		
+		return resource.accept(MediaType.APPLICATION_JSON).get(TreeSet.class);
 	}
 
 	@Override

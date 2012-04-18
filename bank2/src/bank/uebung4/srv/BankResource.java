@@ -45,6 +45,12 @@ public class BankResource {
 		System.out.println(result.toString());
 		return result.toString();
 	}
+	
+	@GET
+	@Path("/accounts")
+	public Set<String> getAccountNumbersSet() throws IOException {
+		return localbank.getAccountNumbers();
+	}
 		
 	@GET
 	@Path("/accounts/{id}")
