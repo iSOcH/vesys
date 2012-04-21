@@ -10,7 +10,6 @@ import com.sun.jersey.api.json.JSONConfiguration;
 
 import bank.Bank;
 import bank.BankDriver;
-import bank.uebung3.client.jaxws.BankServiceImpl;
 
 public class RESTDriver implements BankDriver{
 	private WebResource resource;
