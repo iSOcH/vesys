@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.ws.rs.core.MediaType;
 
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 import bank.Account;
@@ -22,7 +23,6 @@ public class RESTAccount implements Account{
 	
 	@Override
 	public String getNumber() throws IOException {
-		System.out.println("getNumber: "+number);
 		return number;
 	}
 
@@ -30,7 +30,6 @@ public class RESTAccount implements Account{
 	public String getOwner() throws IOException {
 		Account realAcc = resource.path(number).accept(MediaType.APPLICATION_JSON)
 				.get(AccountData.class);
-		System.out.println("realAcc: " + realAcc.toString());
 		return realAcc.getOwner();
 	}
 
@@ -56,8 +55,18 @@ public class RESTAccount implements Account{
 
 	@Override
 	public double getBalance() throws IOException {
-		Account realAcc = resource.path(number).accept(MediaType.APPLICATION_JSON).get(AccountData.class);
-		return realAcc.getBalance();
+		try {
+			Account realAcc = resource.path(number).accept(MediaType.APPLICATION_JSON).get(AccountData.class);
+			return realAcc.getBalance();
+		} catch (UniformInterfaceException e) {
+			if (e.getResponse().getStatus() == 404) {
+				// this means this account does not exist (anymore) on the server
+				return 0;
+			} else {
+				// should not happen
+				throw new IOException(e);
+			}
+		}
 	}
 
 	@Override
