@@ -34,21 +34,12 @@ public class RESTBank implements Bank {
 
 	@Override
 	public boolean removeAccount(String number) throws IOException {
-		ClientResponse resp = resource.path("/"+number).delete(ClientResponse.class);
+		ClientResponse resp = resource.path(number).delete(ClientResponse.class);
 		return resp.getStatus() == 200;
 	}
 
 	@Override
 	public Set<String> getAccountNumbers() throws IOException {
-//		System.out.print("getAccountNumbers: ");
-//		String response = resource.accept(MediaType.TEXT_PLAIN_TYPE).get(String.class);
-//		System.out.println(response);
-//		Set<String> set = new TreeSet<String>();
-//		for(String s : response.split("/n")){
-//			if(!"".equals(s)) set.add(s); System.out.println(s);
-//		}
-//		return set;
-		
 		return resource.accept(MediaType.APPLICATION_JSON).get(TreeSet.class);
 	}
 
@@ -68,11 +59,7 @@ public class RESTBank implements Bank {
 		if (a == null || b == null) throw new IllegalArgumentException();
 		if (amount < 0) throw new IllegalArgumentException();
 		if (a.isActive() && b.isActive()) {
-			// b.deposit is guaranteed to work now
-//			a.withdraw(amount);
-//			b.deposit(amount);
-			
-			ClientResponse response = resource.path("/"+a.getNumber()+"/transfer/"+b.getNumber())
+			ClientResponse response = resource.path(a.getNumber()+"/transfer/"+b.getNumber())
 				.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, amount);
 			switch (response.getStatus()) {
 			case 409:

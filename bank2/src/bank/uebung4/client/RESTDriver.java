@@ -21,7 +21,7 @@ public class RESTDriver implements BankDriver{
 		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
 		
 		Client c = Client.create(config);
-		resource = c.resource("http://localhost:9998/bank/accounts");
+		resource = c.resource("http://localhost:9998/bank/accounts/");
 		bank = new RESTBank(resource);
 		
 	}
