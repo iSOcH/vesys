@@ -23,10 +23,8 @@ public class RESTBank implements Bank {
 
 	@Override
 	public String createAccount(String owner) throws IOException {
-		System.out.print("createAccount: ");
 		ClientResponse resp = resource.type(MediaType.TEXT_PLAIN).post(ClientResponse.class, owner);
 		String[] result = resp.getHeaders().get("Content-Location").get(0).split("/");
-		System.out.println(result[result.length-1]);
 		return result[result.length-1];
 	}
 

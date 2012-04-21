@@ -3,7 +3,6 @@ package bank.uebung4.srv;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -15,28 +14,24 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.sun.jersey.api.NotFoundException;
 
 import bank.Account;
+import bank.Bank;
 import bank.InactiveException;
 import bank.OverdrawException;
-import bank.local.LocalAccount;
 import bank.local.LocalBank;
 import bank.uebung4.AccountData;
 
 @Path("/bank")
 public class BankResource {
-	LocalBank localbank;
+	Bank localbank;
 	
 	public BankResource() {
 		localbank = new LocalBank();
-		System.out.println("BankResource() called");
 	}
 	
 	@GET
@@ -61,8 +56,7 @@ public class BankResource {
 	@GET
 	@Path("/accounts/{id}")
 	@Produces("text/plain")
-	public String getAccountInfos(@PathParam("id") String id) throws IOException{
-		System.out.println("getAccountInfos");
+	public String getAccountInfos(@PathParam("id") String id) throws IOException {
 		StringBuffer result = new StringBuffer();
 		Account acc = localbank.getAccount(id);
 		if(acc != null){
@@ -91,18 +85,14 @@ public class BankResource {
 	@POST
 	@Path("/accounts")
 	@Consumes("text/plain")
-	@Produces("text/plain")
-	public Response createAccount(String owner) throws IOException, URISyntaxException{
-		System.out.println("createAccount: " +owner);
+	public Response createAccount(String owner) throws IOException, URISyntaxException {
 		URI uri = new URI("http://localhost:9998/bank/accounts/"+localbank.createAccount(owner));
-		System.out.println(uri.toString());
 		return Response.status(201).contentLocation(uri).build();
 	}
 
 	@HEAD
 	@Path("/accounts/{id}")
-	public Response isActive(@PathParam("id") String id) throws IOException{
-		System.out.println("isActive");
+	public Response isActive(@PathParam("id") String id) throws IOException {
 		Account acc = localbank.getAccount(id);
 		if(acc != null){
 			if(acc.isActive()){
@@ -117,10 +107,9 @@ public class BankResource {
 	
 	@DELETE
 	@Path("/accounts/{id}")
-	public Response removeAccount(@PathParam("id") String id) throws IOException{
-		System.out.println("removeAccount " + id);
+	public Response removeAccount(@PathParam("id") String id) throws IOException {
 		boolean result = localbank.removeAccount(id);
-		if(result){
+		if (result) {
 			return Response.noContent().status(200).build();
 		} else {
 			return Response.noContent().status(204).build();
@@ -130,21 +119,22 @@ public class BankResource {
 	@PUT
 	@Path("/accounts/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response setBalance(@PathParam("id") String id, double balance) throws IOException{
-		System.out.println("setBalance");
+	public Response setBalance(@PathParam("id") String id, double balance) throws IOException {
 		Account acc = localbank.getAccount(id);
-		if(acc != null){
+		if (acc != null) {
 			try {
-			if(acc.getBalance()>balance){
+				if(acc.getBalance() > balance) {
 					acc.withdraw(acc.getBalance() - balance);
-			} else if(acc.getBalance()<balance) {
-				acc.deposit(balance-acc.getBalance());
-			} else {
-				//nothing to do
-			}
-			return Response.status(200).build();
-			} catch (Exception e) {
-				return Response.status(204).build();
+				} else if(acc.getBalance()<balance) {
+					acc.deposit(balance - acc.getBalance());
+				}
+				return Response.status(200).build();
+			} catch (IllegalArgumentException e) {
+				return Response.notAcceptable(null).build();
+			} catch (InactiveException e) {
+				throw new NotFoundException("at least one account was not active");
+			} catch (OverdrawException e) {
+				return Response.status(409).build();
 			}
 		} else {
 			return Response.status(404).build();						

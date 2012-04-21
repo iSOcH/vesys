@@ -42,15 +42,29 @@ public class RESTAccount implements Account{
 	@Override
 	public void deposit(double amount) throws IOException,
 			IllegalArgumentException, InactiveException {
-		double balance = this.getBalance();
-		resource.path(number).type(MediaType.APPLICATION_JSON).put(balance + amount);
+		try {
+			double balance = this.getBalance();
+			resource.path(number).type(MediaType.APPLICATION_JSON).put(balance + amount);
+		} catch (UniformInterfaceException e) {
+			try {
+				handleUniformInterfaceException(e);
+			} catch (OverdrawException e1) {
+				// this should not happen here
+				throw new IOException(e1);
+			}
+		}
+		
 	}
 
 	@Override
 	public void withdraw(double amount) throws IOException,
 			IllegalArgumentException, OverdrawException, InactiveException {
-		double balance = this.getBalance();
-		resource.path(number).type(MediaType.APPLICATION_JSON).put(balance - amount);
+		try {
+			double balance = this.getBalance();
+			resource.path(number).type(MediaType.APPLICATION_JSON).put(balance - amount);
+		} catch (UniformInterfaceException e) {
+			handleUniformInterfaceException(e);
+		}
 	}
 
 	@Override
@@ -73,6 +87,26 @@ public class RESTAccount implements Account{
 	public boolean setActive(boolean active) throws IOException {
 		//not implemented
 		return false;
+	}
+	
+	/**
+	 * used for deposit and withdraw to reduce code-redundancy
+	 * @param exception
+	 * @throws OverdrawException
+	 * @throws InactiveException
+	 * @throws IOException
+	 */
+	private void handleUniformInterfaceException(UniformInterfaceException exception) throws OverdrawException, InactiveException, IOException {
+		switch (exception.getResponse().getStatus()) {
+		case 404:
+			throw new InactiveException();
+		case 409:
+			throw new OverdrawException();
+		case 406:
+			throw new IllegalArgumentException();
+		default:
+			throw new IOException();
+		}
 	}
 
 }
