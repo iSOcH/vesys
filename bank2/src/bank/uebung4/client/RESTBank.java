@@ -18,11 +18,9 @@ import bank.OverdrawException;
 
 public class RESTBank implements Bank {
 	WebResource resource;
-	Client client;
 	
-	public RESTBank(WebResource resource, Client client) {
+	public RESTBank(WebResource resource) {
 		this.resource = resource;
-		this.client = client;
 	}
 
 	@Override

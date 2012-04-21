@@ -22,7 +22,7 @@ public class RESTDriver implements BankDriver{
 		
 		Client c = Client.create(config);
 		resource = c.resource("http://localhost:9998/bank/accounts");
-		bank = new RESTBank(resource, c);
+		bank = new RESTBank(resource);
 		
 	}
 
@@ -34,7 +34,6 @@ public class RESTDriver implements BankDriver{
 
 	@Override
 	public Bank getBank() {
-		// TODO Auto-generated method stub
 		return bank;
 	}
 
