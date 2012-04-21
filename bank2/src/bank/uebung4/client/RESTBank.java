@@ -5,9 +5,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
