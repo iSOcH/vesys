@@ -14,10 +14,13 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.sun.jersey.api.NotFoundException;
+import com.sun.jersey.api.ParamException;
+import com.sun.jersey.api.ParamException.QueryParamException;
 
 import bank.Account;
 import bank.Bank;
@@ -138,6 +141,19 @@ public class BankResource {
 			}
 		} else {
 			return Response.status(404).build();						
+		}
+	}
+	
+	@POST
+	@Path("/accounts/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public boolean setActive(@PathParam("id") String id, boolean active) throws IOException {
+		Account acc = localbank.getAccount(id);
+		if (acc != null) {
+			return acc.setActive(active);
+		} else {
+			throw new NotFoundException();
 		}
 	}
 	

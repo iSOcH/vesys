@@ -85,8 +85,7 @@ public class RESTAccount implements Account{
 
 	@Override
 	public boolean setActive(boolean active) throws IOException {
-		//not implemented
-		return false;
+		return resource.path(number).type(MediaType.APPLICATION_JSON).post(Boolean.class, active);
 	}
 	
 	/**
