@@ -34,7 +34,6 @@ public class BankRMI extends UnicastRemoteObject implements BankRemote {
 		return new TreeSet<String>(realBank.getAccountNumbers());
 	}
 
-	// FIXME: i dont think this works
 	public Account getAccount(String number) throws IOException {
 		Account realAcc = realBank.getAccount(number);
 		
