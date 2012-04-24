@@ -7,7 +7,6 @@ import java.rmi.registry.LocateRegistry;
 
 import bank.uebung5.BankRemote;
 
-
 public class RMIServer {
 
 	public static void main(String[] args) throws RemoteException, MalformedURLException {
