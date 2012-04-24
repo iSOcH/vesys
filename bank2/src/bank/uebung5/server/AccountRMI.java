@@ -1,15 +1,15 @@
 package bank.uebung5.server;
 
 import java.io.IOException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import bank.Account;
 import bank.InactiveException;
 import bank.OverdrawException;
+import bank.uebung5.AccountRemote;
 
-public class AccountRMI extends UnicastRemoteObject implements Remote, Account {
+public class AccountRMI extends UnicastRemoteObject implements AccountRemote {
 	private Account realAccount;
 
 	public AccountRMI(Account realAccount) throws RemoteException {
