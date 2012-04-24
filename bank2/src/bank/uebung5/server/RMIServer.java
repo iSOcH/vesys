@@ -10,7 +10,7 @@ import bank.uebung5.BankRemote;
 public class RMIServer {
 
 	public static void main(String[] args) throws RemoteException, MalformedURLException {
-		// try to create rmi registry withing this process
+		// try to create rmi registry within this process
 		try {
 			System.out.println(RMIServer.class.getName()+".main: creating registry");
 			LocateRegistry.createRegistry(1099);
