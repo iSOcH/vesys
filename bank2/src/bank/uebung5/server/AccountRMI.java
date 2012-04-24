@@ -10,8 +10,14 @@ import bank.OverdrawException;
 import bank.uebung5.AccountRemote;
 
 public class AccountRMI extends UnicastRemoteObject implements AccountRemote {
+	
 	private Account realAccount;
 
+	/**
+	 * Creates an AccountRMI which delegates all calls
+	 * @param realAccount the account to which the calls should be delegated
+	 * @throws RemoteException if failed to export object
+	 */
 	public AccountRMI(Account realAccount) throws RemoteException {
 		super(1077);
 		this.realAccount = realAccount;

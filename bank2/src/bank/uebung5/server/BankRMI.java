@@ -17,6 +17,10 @@ public class BankRMI extends UnicastRemoteObject implements BankRemote {
 
 	private Bank realBank = new LocalBank();
 	
+	/**
+	 * Creates a BankRMI which delegates all calls to a LocalBank
+	 * @throws RemoteException if failed to export object
+	 */
 	public BankRMI() throws RemoteException {
 		super(1077);
 	}
@@ -30,7 +34,7 @@ public class BankRMI extends UnicastRemoteObject implements BankRemote {
 	}
 
 	public Set<String> getAccountNumbers() throws IOException {
-		// has to be Serializible
+		// has to be Serializable
 		return new TreeSet<String>(realBank.getAccountNumbers());
 	}
 
