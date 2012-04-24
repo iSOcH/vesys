@@ -5,6 +5,8 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
+import bank.uebung5.BankRemote;
+
 public class RMIServer {
 
 	public static void main(String[] args) throws RemoteException, MalformedURLException {
@@ -17,7 +19,7 @@ public class RMIServer {
 			System.out.println(">> probably another registry already runs on 1099");
 		}
 
-		BankRMI bank = new BankRMI();
+		BankRemote bank = new BankRMI();
 		Naming.rebind("rmi://localhost:1099/BankService", bank);
 		System.out.println("Bank server started...");
 	}

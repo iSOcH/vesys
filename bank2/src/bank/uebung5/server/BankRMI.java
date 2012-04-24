@@ -1,18 +1,19 @@
 package bank.uebung5.server;
 
 import java.io.IOException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Set;
+import java.util.TreeSet;
 
 import bank.Account;
 import bank.Bank;
 import bank.InactiveException;
 import bank.OverdrawException;
 import bank.local.LocalBank;
+import bank.uebung5.BankRemote;
 
-public class BankRMI extends UnicastRemoteObject implements Bank, Remote {
+public class BankRMI extends UnicastRemoteObject implements BankRemote {
 
 	private Bank realBank = new LocalBank();
 	
@@ -29,12 +30,19 @@ public class BankRMI extends UnicastRemoteObject implements Bank, Remote {
 	}
 
 	public Set<String> getAccountNumbers() throws IOException {
-		return realBank.getAccountNumbers();
+		// has to be Serializible
+		return new TreeSet<String>(realBank.getAccountNumbers());
 	}
 
 	// FIXME: i dont think this works
 	public Account getAccount(String number) throws IOException {
-		return realBank.getAccount(number);
+		Account realAcc = realBank.getAccount(number);
+		
+		if (realAcc != null) {
+			return new AccountRMI(realAcc);
+		} else {
+			return null;
+		}
 	}
 
 	public void transfer(Account a, Account b, double amount)
@@ -42,7 +50,5 @@ public class BankRMI extends UnicastRemoteObject implements Bank, Remote {
 			InactiveException {
 		realBank.transfer(a, b, amount);
 	}
-	
-	
 
 }

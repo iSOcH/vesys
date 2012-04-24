@@ -6,17 +6,16 @@ import java.rmi.NotBoundException;
 
 import bank.Bank;
 import bank.BankDriver;
-import bank.uebung5.server.BankRMI;
+import bank.uebung5.BankRemote;
 
 public class RMIDriver implements BankDriver {
-	private BankRMI bank;
+	private Bank bank;
 	
 	@Override
 	public void connect(String[] args) throws IOException {
 		try {
-			bank = (BankRMI)Naming.lookup(
-					"rmi://localhost/BankService"
-				);
+			Object foo = Naming.lookup("rmi://localhost/BankService");
+			bank = (BankRemote) foo;
 		} catch (NotBoundException e) {
 			throw new IOException(e);
 		}
