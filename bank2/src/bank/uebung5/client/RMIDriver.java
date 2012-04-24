@@ -14,12 +14,10 @@ public class RMIDriver implements BankDriver {
 	@Override
 	public void connect(String[] args) throws IOException {
 		try {
-			Object foo = Naming.lookup("rmi://localhost/BankService");
-			bank = (BankRemote) foo;
+			bank = (BankRemote) Naming.lookup("rmi://localhost/BankService");
 		} catch (NotBoundException e) {
 			throw new IOException(e);
 		}
-
 	}
 
 	@Override
