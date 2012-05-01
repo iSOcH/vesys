@@ -61,7 +61,10 @@ public class LocalBank implements Bank {
 			InactiveException {
 		if (a == null || b == null) throw new IllegalArgumentException();
 		if (amount < 0) throw new IllegalArgumentException();
-		if (a.isActive() && b.isActive()) {
+		
+		// 01.05.2012 also check if the accounts are contained in our Map (thx to Lerch)
+		if (a.isActive() && b.isActive() && accounts.containsKey(a.getNumber())
+				&& accounts.containsKey(b.getNumber())) {
 			// b.deposit is guaranteed to work now
 			a.withdraw(amount);
 			b.deposit(amount);
