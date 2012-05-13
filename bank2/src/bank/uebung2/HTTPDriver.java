@@ -40,6 +40,9 @@ public class HTTPDriver implements CommandDriver {
 		try {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
+
+			// this is redundant, calling getOutputStream on an URLConnection
+			// will always set the requestMethod to POST
 			conn.setRequestMethod("POST");
 			ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(conn.getOutputStream()));
 			
