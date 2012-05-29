@@ -56,8 +56,15 @@ public class JMSBankServer implements MessageListener {
 
 				// execute the command
 				Command cmd = (Command) ((ObjectMessage) msg).getObject();
+				
+				System.out.println("got command, trying to execute...:" + cmd);
+				
 				cmd.execute(realBankDriver);
+				// FIXME! this does not return... wtf?
+				
 				ReturnValue retVal = cmd.getResult();
+				
+				System.out.println("executed command " + cmd);
 				
 				// we seem to be done, send result back to client
 				returnMessage.setObject(retVal);
