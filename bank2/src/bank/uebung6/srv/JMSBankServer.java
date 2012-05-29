@@ -33,7 +33,7 @@ public class JMSBankServer implements MessageListener {
 		realBankDriver = new LocalDriver();
 		
 		ActiveMQConnectionFactory connectionFactory = new
-		ActiveMQConnectionFactory("tcp://localhost:61616");
+				ActiveMQConnectionFactory("tcp://localhost:61616");
 		
 		// Create JMS objects
 		QueueConnection connection = connectionFactory.createQueueConnection();
@@ -70,6 +70,8 @@ public class JMSBankServer implements MessageListener {
 				System.err.println("something was not received in the format we want it");
 				e.printStackTrace();
 			}
+		} else {
+			System.err.println("we only handle ObjectMessages but we received something else: " + msg);
 		}
 	}
 
