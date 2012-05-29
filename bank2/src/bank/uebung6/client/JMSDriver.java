@@ -85,7 +85,6 @@ public class JMSDriver implements CommandDriver {
 			if (respMsg == null || !(respMsg instanceof ObjectMessage)) {
 				return new ReturnValueDefault(false, new IOException("received response not OK! " + respMsg), null);
 			}
-			
 			return (ReturnValue) ((ObjectMessage) respMsg).getObject();
 			
 		} catch (JMSException e) {
