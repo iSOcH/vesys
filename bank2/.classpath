@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="src/res/jersey-server-1.6.jar"/>
 	<classpathentry kind="lib" path="src/res/jettison-1.1.jar"/>
 	<classpathentry kind="lib" path="src/res/jsr311-api-1.1.1.jar"/>
+	<classpathentry kind="lib" path="src/res/activemq-all-5.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
