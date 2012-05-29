@@ -1,6 +1,5 @@
 package bank.uebung6.srv;
 
-import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
