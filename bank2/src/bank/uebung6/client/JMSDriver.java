@@ -9,8 +9,10 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
+import javax.jms.Queue;
 import javax.jms.QueueConnection;
 import javax.jms.Session;
 
@@ -30,7 +32,7 @@ public class JMSDriver implements CommandDriver {
 	private MessageProducer producer;
 	private Session session;
 	private MessageConsumer receiver;
-	private Destination answerDestination;
+	private Queue answerDestination;
 	
 	@Override
 	public void connect(String[] args) throws IOException {

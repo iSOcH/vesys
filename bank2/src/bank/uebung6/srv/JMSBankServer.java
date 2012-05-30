@@ -2,6 +2,7 @@ package bank.uebung6.srv;
 
 import java.io.IOException;
 
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -64,7 +65,7 @@ public class JMSBankServer implements MessageListener {
 				
 				// we seem to be done, send result back to client
 				returnMessage.setObject(retVal);
-				sender.send(replyTo, returnMessage);
+				sender.send(returnMessage, DeliveryMode.NON_PERSISTENT, 4, 1000);
 			} catch (JMSException e) {
 				System.err.println("could not get command object from message: " + msg);
 				e.printStackTrace();
