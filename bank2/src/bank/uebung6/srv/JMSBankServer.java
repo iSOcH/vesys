@@ -1,5 +1,7 @@
 package bank.uebung6.srv;
 
+import java.io.IOException;
+
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -24,12 +26,13 @@ public class JMSBankServer implements MessageListener {
 	private BankDriver realBankDriver;
 	private QueueSession session;
 	
-	public static void main(String[] args) throws JMSException {
+	public static void main(String[] args) throws JMSException, IOException {
 		new JMSBankServer();
 	}
 	
-	public JMSBankServer() throws JMSException {
+	public JMSBankServer() throws JMSException, IOException {
 		realBankDriver = new LocalDriver();
+		realBankDriver.connect(null);
 		
 		ActiveMQConnectionFactory connectionFactory = new
 				ActiveMQConnectionFactory("tcp://localhost:61616");
@@ -56,15 +59,8 @@ public class JMSBankServer implements MessageListener {
 
 				// execute the command
 				Command cmd = (Command) ((ObjectMessage) msg).getObject();
-				
-				System.out.println("got command, trying to execute...:" + cmd);
-				
 				cmd.execute(realBankDriver);
-				// FIXME! this does not return... wtf?
-				
 				ReturnValue retVal = cmd.getResult();
-				
-				System.out.println("executed command " + cmd);
 				
 				// we seem to be done, send result back to client
 				returnMessage.setObject(retVal);

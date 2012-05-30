@@ -49,7 +49,7 @@ public class JMSDriver implements CommandDriver {
 			producer = session.createProducer(destination);
 			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			
-			answerDestination = session.createQueue("JMSBankClient-" + UUID.randomUUID());
+			answerDestination = session.createTemporaryQueue();
 			receiver = session.createConsumer(answerDestination);
 		} catch (JMSException e) {
 			System.err.println("could not connect to BankJMS");
@@ -81,7 +81,7 @@ public class JMSDriver implements CommandDriver {
 			producer.send(msg);
 			
 			// get answer and process
-			Message respMsg = receiver.receive(500);
+			Message respMsg = receiver.receive(1000);
 			if (respMsg == null || !(respMsg instanceof ObjectMessage)) {
 				return new ReturnValueDefault(false, new IOException("received response not OK! " + respMsg), null);
 			}
