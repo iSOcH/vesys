@@ -85,7 +85,7 @@ public class JMSDriver implements CommandDriver {
 			producer.send(msg);
 			
 			// get answer and process
-			Message respMsg = receiver.receive(000);
+			Message respMsg = receiver.receive(1000);
 			if (respMsg == null || !(respMsg instanceof ObjectMessage)) {
 				return new ReturnValueDefault(false, new IOException("received response not OK! " + respMsg), null);
 			}
