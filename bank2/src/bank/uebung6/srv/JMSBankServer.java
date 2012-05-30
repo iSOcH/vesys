@@ -56,7 +56,6 @@ public class JMSBankServer implements MessageListener {
 				// prepare response
 				Queue replyTo = (Queue) msg.getJMSReplyTo();
 				QueueSender sender = session.createSender(replyTo);
-				ObjectMessage returnMessage = session.createObjectMessage();
 
 				// execute the command
 				Command cmd = (Command) ((ObjectMessage) msg).getObject();
@@ -64,8 +63,8 @@ public class JMSBankServer implements MessageListener {
 				ReturnValue retVal = cmd.getResult();
 				
 				// we seem to be done, send result back to client
-				returnMessage.setObject(retVal);
-				sender.send(returnMessage, DeliveryMode.NON_PERSISTENT, 4, 1000);
+				ObjectMessage returnMessage = session.createObjectMessage(retVal);
+				sender.send(returnMessage);
 			} catch (JMSException e) {
 				System.err.println("could not get command object from message: " + msg);
 				e.printStackTrace();
