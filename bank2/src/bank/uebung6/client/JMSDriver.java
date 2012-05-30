@@ -33,6 +33,7 @@ public class JMSDriver implements CommandDriver {
 	private Session session;
 	private MessageConsumer receiver;
 	private Queue answerDestination;
+	private Connection connection;
 	
 	@Override
 	public void connect(String[] args) throws IOException {
@@ -42,8 +43,7 @@ public class JMSDriver implements CommandDriver {
 				ActiveMQConnectionFactory("tcp://localhost:61616");
 		
 		try {
-			// Create JMS objects
-			Connection connection = connectionFactory.createConnection();
+			connection = connectionFactory.createConnection();
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			
 			// Create the destination (Topic or Queue)
@@ -53,6 +53,8 @@ public class JMSDriver implements CommandDriver {
 			
 			answerDestination = session.createTemporaryQueue();
 			receiver = session.createConsumer(answerDestination);
+			
+			connection.start();
 		} catch (JMSException e) {
 			System.err.println("could not connect to BankJMS");
 			e.printStackTrace();
@@ -64,7 +66,7 @@ public class JMSDriver implements CommandDriver {
 	public void disconnect() throws IOException {
 		proxyBank = null;
 		try {
-			session.close();
+			connection.close();
 		} catch (JMSException e) {
 			throw new IOException(e);
 		}
